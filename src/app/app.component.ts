@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+declare const pendo: any;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -39,6 +41,15 @@ export class AppComponent {
     this.income = this.income + Number(value.value)
     this.showIncomeForm = false
     this.updateSaving()
+
+    // Track successful income addition
+    if (typeof pendo !== 'undefined') {
+      pendo.track('income_added', {
+        amount: Number(value.value),
+        new_income_total: this.income,
+        new_savings: this.saving
+      })
+    }
   }
 
   updateExpense(value:any) {
@@ -58,6 +69,16 @@ export class AppComponent {
     this.expense = this.expense + Number(value.value)
     this.showExpenseForm = false
     this.updateSaving()
+
+    // Track successful expense addition
+    if (typeof pendo !== 'undefined') {
+      pendo.track('expense_added', {
+        amount: Number(value.value),
+        new_expense_total: this.expense,
+        new_savings: this.saving,
+        income_at_time: this.income
+      })
+    }
   }
 
   clearStats(){
